@@ -1,0 +1,17 @@
+### Test Webhook API (local)
+POST http://localhost:5000/api/webhook
+Content-Type: application/json
+
+{
+  "fileId": "1abcXYZ456",
+  "fileName": "Test Sheet",
+  "sheetId": 0,
+  "sheetName": "Sheet1",
+  "row": 1,
+  "column": 1,
+  "range": "A1",
+  "newValue": "Updated",
+  "url": "https://docs.google.com/spreadsheets/d/1abcXYZ456/edit#gid=0&range=A1",
+  "user": "your.email@example.com",
+  "editedAt": "2025-07-28T09:30:00Z"
+}

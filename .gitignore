@@ -1,0 +1,22 @@
+# Thư mục build
+bin/
+obj/
+
+# VS / IDE config cá nhân
+.vs/
+*.user
+*.suo
+*.csproj.user
+
+# VS Code settings (nếu dùng)
+.vscode/
+
+# Publish profiles
+Properties/PublishProfiles/
+
+# File hệ điều hành
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
