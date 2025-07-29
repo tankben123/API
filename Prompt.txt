@@ -1,0 +1,47 @@
+1. Prompt tạo Google Apps Script gửi Webhook
+// Viết Apps Script theo dõi thay đổi trên ô bất kỳ trong Google Sheet,
+// lấy thông tin fileId, sheetName, user, range, oldValue, newValue,
+// và gửi webhook JSON đến URL chỉ định.
+
+2. Prompt tạo Model C# nhận dữ liệu từ webhook
+// Tạo class C# có tên SheetChangeEvent gồm các thuộc tính:
+// FileId, FileName, SheetName, Url, Range, NewValue, OldValue,
+// Row, Column, User, EditedAt.
+
+ 3. Prompt tạo SignalR Hub chia nhóm theo fileId
+ // Viết SignalR Hub tên SheetChangeEventHub,
+// có hàm JoinFileGroup(fileId) để client vào Group tương ứng với FileId.
+
+4. Prompt tạo Web API Controller nhận webhook từ App Script
+// Tạo Controller tên WebhookController (route: /api/webhook).
+// Khi nhận POST từ App Script với SheetChangeEvent,
+// gửi dữ liệu tới SignalR group theo FileId.
+
+5. Prompt cấu hình Web API ASP.NET Core 9
+// Trong Program.cs, đăng ký SignalR và MapHub tại "/hubs/sheetChange".
+// MapControllerRoutes nếu cần.
+
+6. Prompt tạo client WinForms dùng SignalR
+// Tạo WinForms app, kết nối tới SignalR tại /hubs/sheetChange,
+// lắng nghe sự kiện ReceiveSheetChange<SheetChangeEvent>,
+// hiển thị dữ liệu ra TextBox hoặc NotifyIcon.
+
+7. Prompt tích hợp NotifyIcon hiển thị popup
+// Tạo NotifyIcon hiện thông báo khi có SheetChangeEvent mới,
+// nếu click vào popup thì mở trình duyệt tới Url trong dữ liệu.
+
+8. Prompt thêm cơ chế reconnect và wake-up server
+// Nếu mất kết nối SignalR, gọi GET tới endpoint ping để đánh thức server (Render),
+// đợi vài giây rồi tự động kết nối lại.
+
+9. Prompt cấu hình client WinForms chạy nền (ẩn Form chính)
+// Tạo WinForms app ẩn cửa sổ chính, chỉ chạy ở System Tray bằng NotifyIcon,
+// và vẫn lắng nghe SignalR background.
+
+10. Prompt Docker hóa Web API (cho Render/Fly.io)
+// Viết Dockerfile ASP.NET Core 9 gồm build và runtime stage,
+// phục vụ việc deploy Web API lên Render hoặc Fly.io.
+
+11. Prompt tạo endpoint GET /ping đơn giản để giữ server “thức”
+// Tạo API route GET /ping trả về chuỗi "pong" để client dùng ping giữ Render luôn hoạt động.
+
