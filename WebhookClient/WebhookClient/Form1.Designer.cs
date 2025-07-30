@@ -40,9 +40,11 @@ namespace WebhookClient
             // 
             // txtSignalR
             // 
+            txtSignalR.BackColor = SystemColors.ButtonHighlight;
             txtSignalR.Location = new Point(36, 80);
             txtSignalR.Multiline = true;
             txtSignalR.Name = "txtSignalR";
+            txtSignalR.ReadOnly = true;
             txtSignalR.ScrollBars = ScrollBars.Vertical;
             txtSignalR.Size = new Size(717, 199);
             txtSignalR.TabIndex = 1;
@@ -106,7 +108,7 @@ namespace WebhookClient
             Controls.Add(label1);
             Controls.Add(txtSignalR);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Google Sheet Notifier";
             ResumeLayout(false);
             PerformLayout();
         }

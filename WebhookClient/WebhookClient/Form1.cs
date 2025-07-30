@@ -21,7 +21,7 @@ namespace WebhookClient
             _notifyIcon = new NotifyIcon();
             _notifyIcon.Icon = SystemIcons.Information;
             _notifyIcon.Visible = true;
-            _notifyIcon.Text = "WebhookClient đang chạy nền";
+            _notifyIcon.Text = "Google Sheet Notifier";
 
             _notifyIcon.BalloonTipClicked += (s, e) =>
             {
@@ -74,9 +74,9 @@ namespace WebhookClient
             });
             contextMenu.Items.Add("Mở màn hình chính", null, (s, e) =>
             {
-                this.WindowState = FormWindowState.Normal; // Restore the form
-                this.ShowInTaskbar = true; // Show the form in the taskbar
-                this.Visible = true; // Make the form visible
+                this.Show(); // 👈 BẮT BUỘC để hiện Form lại
+                this.WindowState = FormWindowState.Normal;
+                this.ShowInTaskbar = true;
             });
             contextMenu.Items.Add("Thoát", null, (s, e) => Application.Exit());
             _notifyIcon.ContextMenuStrip = contextMenu;
@@ -85,7 +85,7 @@ namespace WebhookClient
         private void AppendLog(string logType, string message)
         {
             string timestamp = DateTime.Now.ToString("MMM dd hh:mm:ss tt"); // Format: Jul 29 01:42:48 PM
-            string formattedLog = $"\n{timestamp} [{logType}] {message}";
+            string formattedLog = $"{timestamp} [{logType}] {message}{Environment.NewLine}";
             txtSignalR.AppendText(formattedLog);
         }
 
@@ -171,5 +171,17 @@ namespace WebhookClient
             this.ShowInTaskbar = false; // Remove the form from the taskbar
             this.Visible = false; // Hide the form
         }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                // Ẩn form thay vì đóng app
+                e.Cancel = true;
+                this.Hide(); // Hoặc Minimize
+            }
+            base.OnFormClosing(e);
+        }
+
     }
 }
