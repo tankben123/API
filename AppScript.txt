@@ -1,0 +1,48 @@
+function handleWebhook02() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getActiveSheet();
+  const range = sheet.getActiveCell();
+
+  const value = range.getValue(); // Giá trị mới
+  const fileId = ss.getId();
+  const sheetId = sheet.getSheetId();
+  const sheetName = sheet.getName();
+  const rangeA1 = range.getA1Notation();
+  const row = range.getRow();
+  const column = range.getColumn();
+  const user = Session.getActiveUser().getEmail(); // Có thể trả rỗng nếu không phải domain Google Workspace
+
+  const urlToCell = `https://docs.google.com/spreadsheets/d/${fileId}/edit#gid=${sheetId}&range=${rangeA1}`;
+  
+  const payload = {
+    fileId: fileId,
+    fileName: ss.getName(),
+    sheetId: sheetId,
+    sheetName: sheetName,
+    row: row,
+    column: column,
+    range: rangeA1,
+    newValue: value,
+    url: urlToCell,
+    user: user || "Unknown",
+    editedAt: new Date().toISOString()
+  };
+
+  const options = {
+    method: "post",
+    contentType: "application/json",
+    payload: JSON.stringify(payload)
+  };
+
+  const webhookUrl = "https://sheet-api-mega.onrender.com/api/webhook"; // Thay bằng URL thật
+
+  try {
+    const response = UrlFetchApp.fetch(webhookUrl, options);
+    Logger.log("✅ Đã gửi webhook thành công");
+    Logger.log("Mã phản hồi: " + response.getResponseCode());
+    Logger.log("Nội dung phản hồi: " + response.getContentText());
+  } catch (error) {
+    console.warn("Không gửi được webhook: " + error.message);
+    // Bạn có thể log lại lỗi hoặc ghi vào sheet log nếu muốn
+  }
+}

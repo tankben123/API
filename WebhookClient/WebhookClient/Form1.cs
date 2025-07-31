@@ -34,7 +34,8 @@ namespace WebhookClient
                         {
                             FileName = "chrome",
                             Arguments = _latestUrl,
-                            UseShellExecute = true
+                            UseShellExecute = true,
+                            WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
                         });
                     }
                     catch
@@ -42,7 +43,8 @@ namespace WebhookClient
                         Process.Start(new ProcessStartInfo
                         {
                             FileName = _latestUrl,
-                            UseShellExecute = true
+                            UseShellExecute = true,
+                            WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
                         });
                     }
                 }
@@ -59,7 +61,8 @@ namespace WebhookClient
                         {
                             FileName = "chrome",
                             Arguments = _latestUrl,
-                            UseShellExecute = true
+                            UseShellExecute = true,
+                            WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
                         });
                     }
                     catch
@@ -67,7 +70,8 @@ namespace WebhookClient
                         Process.Start(new ProcessStartInfo
                         {
                             FileName = _latestUrl,
-                            UseShellExecute = true
+                            UseShellExecute = true,
+                            WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
                         });
                     }
                 }
@@ -86,14 +90,14 @@ namespace WebhookClient
         {
             string timestamp = DateTime.Now.ToString("MMM dd hh:mm:ss tt"); // Format: Jul 29 01:42:48 PM
             string formattedLog = $"{timestamp} [{logType}] {message}{Environment.NewLine}";
-            txtSignalR.AppendText(formattedLog);
+            textBoxLogs.AppendText(formattedLog);
         }
 
-        private async void ConnectToSignalR(string sheetId)
+        private async Task ConnectToSignalR(string sheetId)
         {
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl("https://sheet-api-mega.onrender.com/hubs/sheetChange")
-                .WithAutomaticReconnect()
+                .WithAutomaticReconnect(new ImmediateRetryPolicy()) // Custom reconnection policy
                 .Build();
 
             _hubConnection.On<object>("ReceiveSheetChange", (data) =>
@@ -122,6 +126,42 @@ namespace WebhookClient
                     }
                 });
             });
+
+            _hubConnection.Reconnecting += async (error) =>
+            {
+                Invoke(() =>
+                {
+                    AppendLog("WARNING", "⚠️ Đang cố gắng kết nối lại...");
+                });
+            };
+
+            _hubConnection.Reconnected += async (connectionId) =>
+            {
+                Invoke(() =>
+                {
+                    AppendLog("SUCCESS", "✅ Đã kết nối lại thành công.");
+                });
+
+                try
+                {
+                    await _hubConnection.InvokeAsync("JoinFileGroup", sheetId);
+                    AppendLog("INFO", "🔄 Đã gán lại Group ID sau khi kết nối lại.");
+                }
+                catch (Exception ex)
+                {
+                    AppendLog("ERROR", $"❌ Lỗi khi gán lại Group ID: {ex.Message}");
+                }
+            };
+
+            _hubConnection.Closed += async (error) =>
+            {
+                Invoke(() =>
+                {
+                    AppendLog("ERROR", "❌ Kết nối đã bị đóng. Đang cố gắng kết nối lại...");
+                });
+
+                await ConnectToSignalR(sheetId);
+            };
 
             try
             {
@@ -156,7 +196,7 @@ namespace WebhookClient
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string SheetId = txtSheetId.Text.Trim();
+            string SheetId = textBoxSheetId.Text.Trim();
             if (string.IsNullOrEmpty(SheetId))
             {
                 AppendLog("ERROR", "❌ Vui lòng nhập ID Sheet.");
@@ -183,5 +223,14 @@ namespace WebhookClient
             base.OnFormClosing(e);
         }
 
+    }
+
+    public class ImmediateRetryPolicy : IRetryPolicy
+    {
+        public TimeSpan? NextRetryDelay(RetryContext retryContext)
+        {
+            // Always return zero delay for immediate reconnection
+            return TimeSpan.Zero;
+        }
     }
 }

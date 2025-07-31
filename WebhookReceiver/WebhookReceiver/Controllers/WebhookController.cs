@@ -22,7 +22,6 @@ namespace WebhookReceiver.Controllers
         {
             Console.WriteLine("📩 Nhận được Webhook từ Apps Script:");
             Console.WriteLine(JsonSerializer.Serialize(data));
-            Console.WriteLine(data.FileId);
 
             // Gửi đến tất cả client đã "join" group fileId
             await _hubContext.Clients.Group(data.FileId).SendAsync("ReceiveSheetChange", data);

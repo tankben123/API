@@ -30,83 +30,83 @@ namespace WebhookClient
         /// </summary>
         private async Task InitializeComponent()
         {
-            txtSignalR = new TextBox();
-            label1 = new Label();
-            txtSheetId = new TextBox();
-            button1 = new Button();
-            button2 = new Button();
-            label2 = new Label();
+            textBoxLogs = new TextBox();
+            labelLogs = new Label();
+            textBoxSheetId = new TextBox();
+            buttonJoin = new Button();
+            buttonExit = new Button();
+            labelSheetId = new Label();
             SuspendLayout();
             // 
-            // txtSignalR
+            // textBoxLogs
             // 
-            txtSignalR.BackColor = SystemColors.ButtonHighlight;
-            txtSignalR.Location = new Point(36, 80);
-            txtSignalR.Multiline = true;
-            txtSignalR.Name = "txtSignalR";
-            txtSignalR.ReadOnly = true;
-            txtSignalR.ScrollBars = ScrollBars.Vertical;
-            txtSignalR.Size = new Size(717, 199);
-            txtSignalR.TabIndex = 1;
+            textBoxLogs.BackColor = SystemColors.ButtonHighlight;
+            textBoxLogs.Location = new Point(36, 80);
+            textBoxLogs.Multiline = true;
+            textBoxLogs.Name = "textBoxLogs";
+            textBoxLogs.ReadOnly = true;
+            textBoxLogs.ScrollBars = ScrollBars.Vertical;
+            textBoxLogs.Size = new Size(630, 199);
+            textBoxLogs.TabIndex = 1;
             // 
-            // label1
+            // labelLogs
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(36, 55);
-            label1.Name = "label1";
-            label1.Size = new Size(32, 15);
-            label1.TabIndex = 2;
-            label1.Text = "Logs";
-            label1.Click += label1_Click;
+            labelLogs.AutoSize = true;
+            labelLogs.Location = new Point(36, 55);
+            labelLogs.Name = "labelLogs";
+            labelLogs.Size = new Size(32, 15);
+            labelLogs.TabIndex = 2;
+            labelLogs.Text = "Logs";
+            labelLogs.Click += label1_Click;
             // 
-            // txtSheetId
+            // textBoxSheetId
             // 
-            txtSheetId.Location = new Point(192, 17);
-            txtSheetId.Name = "txtSheetId";
-            txtSheetId.Size = new Size(381, 23);
-            txtSheetId.TabIndex = 4;
+            textBoxSheetId.Location = new Point(192, 17);
+            textBoxSheetId.Name = "textBoxSheetId";
+            textBoxSheetId.Size = new Size(381, 23);
+            textBoxSheetId.TabIndex = 4;
             // 
-            // button1
+            // buttonJoin
             // 
-            button1.Location = new Point(592, 17);
-            button1.Name = "button1";
-            button1.Size = new Size(74, 23);
-            button1.TabIndex = 5;
-            button1.Text = "Nhận";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            buttonJoin.Location = new Point(592, 17);
+            buttonJoin.Name = "buttonJoin";
+            buttonJoin.Size = new Size(74, 23);
+            buttonJoin.TabIndex = 5;
+            buttonJoin.Text = "Nhận";
+            buttonJoin.UseVisualStyleBackColor = true;
+            buttonJoin.Click += button1_Click;
             // 
-            // button2
+            // buttonExit
             // 
-            button2.Location = new Point(678, 17);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 6;
-            button2.Text = "Thoát";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            buttonExit.Location = new Point(592, 285);
+            buttonExit.Name = "buttonExit";
+            buttonExit.Size = new Size(75, 23);
+            buttonExit.TabIndex = 6;
+            buttonExit.Text = "Thoát";
+            buttonExit.UseVisualStyleBackColor = true;
+            buttonExit.Click += button2_Click;
             // 
-            // label2
+            // labelSheetId
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(36, 21);
-            label2.Name = "label2";
-            label2.Size = new Size(91, 15);
-            label2.TabIndex = 7;
-            label2.Text = "Google Sheet ID";
-            label2.Click += label2_Click;
+            labelSheetId.AutoSize = true;
+            labelSheetId.Location = new Point(36, 21);
+            labelSheetId.Name = "labelSheetId";
+            labelSheetId.Size = new Size(91, 15);
+            labelSheetId.TabIndex = 7;
+            labelSheetId.Text = "Google Sheet ID";
+            labelSheetId.Click += label2_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(785, 297);
-            Controls.Add(label2);
-            Controls.Add(button2);
-            Controls.Add(button1);
-            Controls.Add(txtSheetId);
-            Controls.Add(label1);
-            Controls.Add(txtSignalR);
+            ClientSize = new Size(703, 321);
+            Controls.Add(labelSheetId);
+            Controls.Add(buttonExit);
+            Controls.Add(buttonJoin);
+            Controls.Add(textBoxSheetId);
+            Controls.Add(labelLogs);
+            Controls.Add(textBoxLogs);
             Name = "Form1";
             Text = "Google Sheet Notifier";
             ResumeLayout(false);
@@ -114,11 +114,11 @@ namespace WebhookClient
         }
 
         #endregion
-        private TextBox txtSignalR;
-        private Label label1;
-        private TextBox txtSheetId;
-        private Button button1;
-        private Button button2;
-        private Label label2;
+        private TextBox textBoxLogs;
+        private Label labelLogs;
+        private TextBox textBoxSheetId;
+        private Button buttonJoin;
+        private Button buttonExit;
+        private Label labelSheetId;
     }
 }
