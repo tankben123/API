@@ -9,11 +9,30 @@ namespace WebhookClient
         private HubConnection _hubConnection;
         private NotifyIcon _notifyIcon;
         private string _latestUrl = "";
+        private System.Windows.Forms.Timer _keepAliveTimer;
 
         public Form1()
         {
             _ = InitializeComponent();
             SetupNotifyIcon();
+            _keepAliveTimer = new System.Windows.Forms.Timer();
+            _keepAliveTimer.Interval = 300000; // 5 phút = 300,000 ms
+            _keepAliveTimer.Tick += async (s, e) =>
+            {
+                try
+                {
+                    using var client = new HttpClient();
+                    var response = await client.GetAsync("https://sheet-api-mega.onrender.com/ping");
+                    AppendLog("INFO", $"Ping server: {response.StatusCode}");
+                }
+                catch (Exception ex)
+                {
+                    AppendLog("ERROR", $"Ping lỗi: {ex.Message}");
+                }
+            };
+            _keepAliveTimer.Start();
+
+
         }
 
         private void SetupNotifyIcon()
@@ -106,7 +125,13 @@ namespace WebhookClient
                 {
                     try
                     {
-                        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                        var options = new JsonSerializerOptions
+                        {
+                            WriteIndented = true,
+                            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                        };
+
+                        var json = JsonSerializer.Serialize(data, options);
                         using var doc = JsonDocument.Parse(json);
                         var root = doc.RootElement;
                         string sheetName = root.GetProperty("sheetName").GetString() ?? "";
