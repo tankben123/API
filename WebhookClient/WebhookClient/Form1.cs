@@ -15,6 +15,7 @@ namespace WebhookClient
         {
             _ = InitializeComponent();
             SetupNotifyIcon();
+            KeyPreview = true;
             _keepAliveTimer = new System.Windows.Forms.Timer();
             _keepAliveTimer.Interval = 300000; // 5 phút = 300,000 ms
             _keepAliveTimer.Tick += async (s, e) =>
@@ -42,56 +43,75 @@ namespace WebhookClient
             _notifyIcon.Visible = true;
             _notifyIcon.Text = "Google Sheet Notifier";
 
-            _notifyIcon.BalloonTipClicked += (s, e) =>
+            _notifyIcon.BalloonTipClicked += async (s, e) =>
             {
                 AppendLog("INFO", "🔔 BalloonTipClicked event triggered.");
                 if (!string.IsNullOrEmpty(_latestUrl))
                 {
                     try
                     {
-                        Process.Start(new ProcessStartInfo
+                        // Launch the browser process asynchronously
+                        await Task.Run(() =>
                         {
-                            FileName = "chrome",
-                            Arguments = _latestUrl,
-                            UseShellExecute = true,
-                            WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
+                            var process = Process.Start(new ProcessStartInfo
+                            {
+                                FileName = "chrome",
+                                Arguments = _latestUrl,
+                                UseShellExecute = true,
+                                WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
+                            });
+
+                            if (process == null)
+                            {
+                                // Fallback to default browser if Chrome fails
+                                Process.Start(new ProcessStartInfo
+                                {
+                                    FileName = _latestUrl,
+                                    UseShellExecute = true,
+                                    WindowStyle = ProcessWindowStyle.Normal
+                                });
+                            }
                         });
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = _latestUrl,
-                            UseShellExecute = true,
-                            WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
-                        });
+                        AppendLog("ERROR", $"❌ Lỗi khi mở trình duyệt: {ex.Message}");
                     }
                 }
             };
 
             var contextMenu = new ContextMenuStrip();
-            contextMenu.Items.Add("Mở Google Sheet", null, (s, e) =>
+            contextMenu.Items.Add("Mở Google Sheet", null, async (s, e) =>
             {
                 if (!string.IsNullOrEmpty(_latestUrl))
                 {
                     try
                     {
-                        Process.Start(new ProcessStartInfo
+                        await Task.Run(() =>
                         {
-                            FileName = "chrome",
-                            Arguments = _latestUrl,
-                            UseShellExecute = true,
-                            WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
+                            var process = Process.Start(new ProcessStartInfo
+                            {
+                                FileName = "chrome",
+                                Arguments = _latestUrl,
+                                UseShellExecute = true,
+                                WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
+                            });
+
+                            if (process == null)
+                            {
+                                // Fallback to default browser if Chrome fails
+                                Process.Start(new ProcessStartInfo
+                                {
+                                    FileName = _latestUrl,
+                                    UseShellExecute = true,
+                                    WindowStyle = ProcessWindowStyle.Normal
+                                });
+                            }
                         });
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = _latestUrl,
-                            UseShellExecute = true,
-                            WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
-                        });
+                        AppendLog("ERROR", $"❌ Lỗi khi mở trình duyệt: {ex.Message}");
                     }
                 }
             });
@@ -248,6 +268,17 @@ namespace WebhookClient
             base.OnFormClosing(e);
         }
 
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            // Check for the specific key combination (e.g., Ctrl + Shift + L)
+            if (e.Control && e.Shift && e.KeyCode == Keys.L)
+            {
+                textBoxLogs.Clear(); // Clear the logs
+                AppendLog("INFO", "🧹 Logs đã được xóa.");
+            }
+        }
     }
 
     public class ImmediateRetryPolicy : IRetryPolicy
