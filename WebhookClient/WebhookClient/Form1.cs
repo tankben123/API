@@ -48,35 +48,7 @@ namespace WebhookClient
                 AppendLog("INFO", "🔔 BalloonTipClicked event triggered.");
                 if (!string.IsNullOrEmpty(_latestUrl))
                 {
-                    try
-                    {
-                        // Launch the browser process asynchronously
-                        await Task.Run(() =>
-                        {
-                            var process = Process.Start(new ProcessStartInfo
-                            {
-                                FileName = "chrome",
-                                Arguments = _latestUrl,
-                                UseShellExecute = true,
-                                WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
-                            });
-
-                            if (process == null)
-                            {
-                                // Fallback to default browser if Chrome fails
-                                Process.Start(new ProcessStartInfo
-                                {
-                                    FileName = _latestUrl,
-                                    UseShellExecute = true,
-                                    WindowStyle = ProcessWindowStyle.Normal
-                                });
-                            }
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLog("ERROR", $"❌ Lỗi khi mở trình duyệt: {ex.Message}");
-                    }
+                    await OpenUrlInBrowser(_latestUrl);
                 }
             };
 
@@ -85,34 +57,7 @@ namespace WebhookClient
             {
                 if (!string.IsNullOrEmpty(_latestUrl))
                 {
-                    try
-                    {
-                        await Task.Run(() =>
-                        {
-                            var process = Process.Start(new ProcessStartInfo
-                            {
-                                FileName = "chrome",
-                                Arguments = _latestUrl,
-                                UseShellExecute = true,
-                                WindowStyle = ProcessWindowStyle.Normal // Ensure the window is not minimized
-                            });
-
-                            if (process == null)
-                            {
-                                // Fallback to default browser if Chrome fails
-                                Process.Start(new ProcessStartInfo
-                                {
-                                    FileName = _latestUrl,
-                                    UseShellExecute = true,
-                                    WindowStyle = ProcessWindowStyle.Normal
-                                });
-                            }
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendLog("ERROR", $"❌ Lỗi khi mở trình duyệt: {ex.Message}");
-                    }
+                    await OpenUrlInBrowser(_latestUrl);
                 }
             });
             contextMenu.Items.Add("Mở màn hình chính", null, (s, e) =>
@@ -247,7 +192,7 @@ namespace WebhookClient
                 AppendLog("ERROR", "❌ Vui lòng nhập ID Sheet.");
                 return;
             }
-            ConnectToSignalR(SheetId);
+            _ = ConnectToSignalR(SheetId);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -277,6 +222,37 @@ namespace WebhookClient
             {
                 textBoxLogs.Clear(); // Clear the logs
                 AppendLog("INFO", "🧹 Logs đã được xóa.");
+            }
+        }
+
+        private async Task OpenUrlInBrowser(string url)
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    var process = Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "chrome",
+                        Arguments = url,
+                        UseShellExecute = true,
+                        WindowStyle = ProcessWindowStyle.Normal
+                    });
+
+                    if (process == null)
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = url,
+                            UseShellExecute = true,
+                            WindowStyle = ProcessWindowStyle.Normal
+                        });
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                AppendLog("ERROR", $"❌ Error opening browser: {ex.Message}");
             }
         }
     }
