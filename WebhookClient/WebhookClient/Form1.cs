@@ -59,6 +59,13 @@ namespace WebhookClient
                 {
                     await OpenUrlInBrowser(_latestUrl);
                 }
+                else
+                {
+                    // Use a default Google Sheet URL with a predefined sheet ID
+                    string defaultSheetId = textBoxSheetId.Text.Trim(); // Replace with your actual sheet ID
+                    string defaultUrl = $"https://docs.google.com/spreadsheets/d/{defaultSheetId}/edit";
+                    await OpenUrlInBrowser(defaultUrl);
+                }
             });
             contextMenu.Items.Add("Mở màn hình chính", null, (s, e) =>
             {
@@ -231,22 +238,84 @@ namespace WebhookClient
             {
                 await Task.Run(() =>
                 {
-                    var process = Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "chrome",
-                        Arguments = url,
-                        UseShellExecute = true,
-                        WindowStyle = ProcessWindowStyle.Normal
-                    });
+                    // Path to Chrome's user data directory
+                    string chromeUserDataPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "Google",
+                        "Chrome",
+                        "User Data"
+                    );
 
-                    if (process == null)
+                    // Path to the "Local State" file
+                    string localStateFilePath = Path.Combine(chromeUserDataPath, "Local State");
+
+                    bool profileUsed = false;
+
+                    if (File.Exists(localStateFilePath))
                     {
-                        Process.Start(new ProcessStartInfo
+                        try
                         {
-                            FileName = url,
+                            // Read and parse the "Local State" file
+                            string localStateJson = File.ReadAllText(localStateFilePath);
+                            using var doc = JsonDocument.Parse(localStateJson);
+                            var root = doc.RootElement;
+
+                            // Extract profile information
+                            var profileInfo = root.GetProperty("profile").GetProperty("info_cache");
+                            foreach (var profile in profileInfo.EnumerateObject())
+                            {
+                                string profileName = profile.Name; // Profile directory name (e.g., "Default", "Profile 1")
+
+                                try
+                                {
+                                    // Attempt to open the URL with the first valid profile
+                                    var process = Process.Start(new ProcessStartInfo
+                                    {
+                                        FileName = "chrome",
+                                        Arguments = $"--profile-directory=\"{profileName}\" {url}",
+                                        UseShellExecute = true,
+                                        WindowStyle = ProcessWindowStyle.Normal
+                                    });
+
+                                    if (process != null)
+                                    {
+                                        profileUsed = true;
+                                        return; // Stop if the URL is successfully opened
+                                    }
+                                }
+                                catch
+                                {
+                                    // Ignore errors and try the next profile
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            AppendLog("ERROR", $"❌ Error reading Chrome profiles: {ex.Message}");
+                        }
+                    }
+
+                    if (!profileUsed)
+                    {
+                        // Fallback to default behavior if no profile could open the link
+                        var fallbackProcess = Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "chrome",
+                            Arguments = url,
                             UseShellExecute = true,
                             WindowStyle = ProcessWindowStyle.Normal
                         });
+
+                        if (fallbackProcess == null)
+                        {
+                            // Fallback to the system's default browser
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = url,
+                                UseShellExecute = true,
+                                WindowStyle = ProcessWindowStyle.Normal
+                            });
+                        }
                     }
                 });
             }
