@@ -181,16 +181,6 @@ namespace WebhookClient
             _notifyIcon.ShowBalloonTip(5000);
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             string SheetId = textBoxSheetId.Text.Trim();

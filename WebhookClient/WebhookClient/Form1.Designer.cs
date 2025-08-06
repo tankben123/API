@@ -57,7 +57,6 @@ namespace WebhookClient
             labelLogs.Size = new Size(32, 15);
             labelLogs.TabIndex = 2;
             labelLogs.Text = "Logs";
-            labelLogs.Click += label1_Click;
             // 
             // textBoxSheetId
             // 
@@ -94,7 +93,6 @@ namespace WebhookClient
             labelSheetId.Size = new Size(91, 15);
             labelSheetId.TabIndex = 7;
             labelSheetId.Text = "Google Sheet ID";
-            labelSheetId.Click += label2_Click;
             // 
             // Form1
             // 
