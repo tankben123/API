@@ -40,6 +40,7 @@ namespace WebhookClient
             // 
             // textBoxLogs
             // 
+            textBoxLogs.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             textBoxLogs.BackColor = SystemColors.ButtonHighlight;
             textBoxLogs.Location = new Point(36, 80);
             textBoxLogs.Multiline = true;
@@ -60,6 +61,7 @@ namespace WebhookClient
             // 
             // textBoxSheetId
             // 
+            textBoxSheetId.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxSheetId.Location = new Point(192, 17);
             textBoxSheetId.Name = "textBoxSheetId";
             textBoxSheetId.Size = new Size(381, 23);
@@ -67,6 +69,7 @@ namespace WebhookClient
             // 
             // buttonJoin
             // 
+            buttonJoin.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             buttonJoin.Location = new Point(592, 17);
             buttonJoin.Name = "buttonJoin";
             buttonJoin.Size = new Size(74, 23);
@@ -77,6 +80,7 @@ namespace WebhookClient
             // 
             // buttonExit
             // 
+            buttonExit.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             buttonExit.Location = new Point(592, 285);
             buttonExit.Name = "buttonExit";
             buttonExit.Size = new Size(75, 23);
