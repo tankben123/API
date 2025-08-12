@@ -30,103 +30,120 @@ namespace WebhookClient
         /// </summary>
         private async Task InitializeComponent()
         {
-            textBoxLogs = new TextBox();
-            labelLogs = new Label();
-            textBoxSheetId = new TextBox();
-            buttonJoin = new Button();
-            buttonExit = new Button();
-            labelSheetId = new Label();
-            SuspendLayout();
-            // 
-            // textBoxLogs
-            // 
-            textBoxLogs.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxLogs.BackColor = SystemColors.ButtonHighlight;
-            textBoxLogs.Location = new Point(36, 80);
-            textBoxLogs.Multiline = true;
-            textBoxLogs.Name = "textBoxLogs";
-            textBoxLogs.ReadOnly = true;
-            textBoxLogs.ScrollBars = ScrollBars.Vertical;
-            textBoxLogs.Size = new Size(630, 199);
-            textBoxLogs.TabIndex = 1;
-            // 
-            // labelLogs
-            // 
-            labelLogs.AutoSize = true;
-            labelLogs.Location = new Point(36, 55);
-            labelLogs.Name = "labelLogs";
-            labelLogs.Size = new Size(32, 15);
-            labelLogs.TabIndex = 2;
-            labelLogs.Text = "Logs";
-            // 
-            // textBoxSheetId
-            // 
-            textBoxSheetId.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxSheetId.Location = new Point(192, 17);
-            textBoxSheetId.Name = "textBoxSheetId";
-            textBoxSheetId.Size = new Size(381, 23);
-            textBoxSheetId.TabIndex = 4;
-            textBoxSheetId.Text = Properties.Settings.Default.SheetId; // Load saved value
-            textBoxSheetId.TextChanged += (s, e) =>
-            {
-                Properties.Settings.Default.SheetId = textBoxSheetId.Text; // Save value on change
-                Properties.Settings.Default.Save();
-            };
-            // 
-            // buttonJoin
-            // 
-            buttonJoin.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            buttonJoin.Location = new Point(592, 17);
-            buttonJoin.Name = "buttonJoin";
-            buttonJoin.Size = new Size(74, 23);
-            buttonJoin.TabIndex = 5;
-            buttonJoin.Text = "Nhận";
-            buttonJoin.UseVisualStyleBackColor = true;
-            buttonJoin.Click += button1_Click;
-            // 
-            // buttonExit
-            // 
-            buttonExit.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonExit.Location = new Point(592, 285);
-            buttonExit.Name = "buttonExit";
-            buttonExit.Size = new Size(75, 23);
-            buttonExit.TabIndex = 6;
-            buttonExit.Text = "Thoát";
-            buttonExit.UseVisualStyleBackColor = true;
-            buttonExit.Click += button2_Click;
-            // 
-            // labelSheetId
-            // 
-            labelSheetId.AutoSize = true;
-            labelSheetId.Location = new Point(36, 21);
-            labelSheetId.Name = "labelSheetId";
-            labelSheetId.Size = new Size(91, 15);
-            labelSheetId.TabIndex = 7;
-            labelSheetId.Text = "Google Sheet ID";
+            this.textBoxLogs = new RichTextBox();
+            this.labelLogs = new Label();
+            this.textBoxSheetId = new TextBox();
+            this.buttonJoin = new Button();
+            this.buttonExit = new Button();
+            this.labelSheetId = new Label();
+            this.statusStrip = new StatusStrip();
+            this.statusLabel = new ToolStripStatusLabel();
+
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(703, 321);
-            Controls.Add(labelSheetId);
-            Controls.Add(buttonExit);
-            Controls.Add(buttonJoin);
-            Controls.Add(textBoxSheetId);
-            Controls.Add(labelLogs);
-            Controls.Add(textBoxLogs);
-            Name = "Form1";
-            Text = "Google Sheet Notifier";
-            ResumeLayout(false);
-            PerformLayout();
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.BackColor = Color.FromArgb(240, 240, 240);
+            this.ClientSize = new Size(720, 380);
+            this.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.Text = "🔥 Google Sheet Notifier";
+
+            // 
+            // labelSheetId
+            // 
+            this.labelSheetId.AutoSize = true;
+            this.labelSheetId.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.labelSheetId.Location = new Point(25, 20);
+            this.labelSheetId.Text = "Google Sheet ID:";
+
+            // 
+            // textBoxSheetId
+            // 
+            this.textBoxSheetId.Location = new Point(160, 18);
+            this.textBoxSheetId.Size = new Size(400, 25);
+            this.textBoxSheetId.Text = Properties.Settings.Default.SheetId;
+            this.textBoxSheetId.BorderStyle = BorderStyle.FixedSingle;
+
+            // 
+            // buttonJoin
+            // 
+            this.buttonJoin.Location = new Point(580, 18);
+            this.buttonJoin.Size = new Size(90, 28);
+            this.buttonJoin.Text = "Kết nối";
+            this.buttonJoin.FlatStyle = FlatStyle.Flat;
+            this.buttonJoin.FlatAppearance.BorderSize = 0;
+            this.buttonJoin.BackColor = Color.FromArgb(76, 175, 80);
+            this.buttonJoin.ForeColor = Color.White;
+            this.buttonJoin.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.buttonJoin.Cursor = Cursors.Hand;
+            this.buttonJoin.Click += button1_Click;
+
+            // 
+            // labelLogs
+            // 
+            this.labelLogs.AutoSize = true;
+            this.labelLogs.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.labelLogs.Location = new Point(25, 60);
+            this.labelLogs.Text = "📜 Logs:";
+
+            // 
+            // textBoxLogs
+            // 
+            this.textBoxLogs.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.textBoxLogs.BackColor = Color.FromArgb(250, 250, 250);
+            this.textBoxLogs.Font = new Font("Consolas", 9F);
+            this.textBoxLogs.Location = new Point(25, 85);
+            this.textBoxLogs.ReadOnly = true;
+            this.textBoxLogs.ScrollBars = RichTextBoxScrollBars.Vertical;
+            this.textBoxLogs.Size = new Size(645, 230);
+            this.textBoxLogs.BorderStyle = BorderStyle.FixedSingle;
+
+            // 
+            // buttonExit
+            // 
+            this.buttonExit.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            this.buttonExit.Location = new Point(580, 325);
+            this.buttonExit.Size = new Size(90, 28);
+            this.buttonExit.Text = "Thoát";
+            this.buttonExit.FlatStyle = FlatStyle.Flat;
+            this.buttonExit.FlatAppearance.BorderSize = 0;
+            this.buttonExit.BackColor = Color.Gray;
+            this.buttonExit.ForeColor = Color.White;
+            this.buttonExit.Cursor = Cursors.Hand;
+            this.buttonExit.Click += button2_Click;
+
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.Dock = DockStyle.Bottom;
+            this.statusStrip.Items.AddRange(new ToolStripItem[] { this.statusLabel });
+
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Text = "Kết nối: Chưa kết nối";
+
+            // Add controls to form
+            this.Controls.Add(this.labelSheetId);
+            this.Controls.Add(this.textBoxSheetId);
+            this.Controls.Add(this.buttonJoin);
+            this.Controls.Add(this.labelLogs);
+            this.Controls.Add(this.textBoxLogs);
+            this.Controls.Add(this.buttonExit);
+            this.Controls.Add(this.statusStrip);
         }
 
         #endregion
-        private TextBox textBoxLogs;
-        private Label labelLogs;
-        private TextBox textBoxSheetId;
-        private Button buttonJoin;
-        private Button buttonExit;
-        private Label labelSheetId;
+        private System.Windows.Forms.RichTextBox textBoxLogs;
+        private System.Windows.Forms.Label labelLogs;
+        private System.Windows.Forms.TextBox textBoxSheetId;
+        private System.Windows.Forms.Button buttonJoin;
+        private System.Windows.Forms.Button buttonExit;
+        private System.Windows.Forms.Label labelSheetId;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
     }
 }

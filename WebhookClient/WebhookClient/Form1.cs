@@ -15,6 +15,13 @@ namespace WebhookClient
         public Form1()
         {
             _ = InitializeComponent();
+
+            textBoxSheetId.TextChanged += (s, e) =>
+            {
+                Properties.Settings.Default.SheetId = textBoxSheetId.Text; // Save value on change
+                Properties.Settings.Default.Save();
+            };
+
             SetupNotifyIcon();
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
@@ -96,9 +103,30 @@ namespace WebhookClient
 
         private void AppendLog(string logType, string message)
         {
+            Color color = Color.Black;
+
+            switch (logType.ToUpper())
+            {
+                case "SUCCESS":
+                    color = Color.FromArgb(76, 175, 80); // xanh lá
+                    break;
+                case "INFO":
+                    color = Color.FromArgb(33, 150, 243); // xanh dương
+                    break;
+                case "ERROR":
+                    color = Color.FromArgb(244, 67, 54); // đỏ
+                    break;
+            }
+
+            textBoxLogs.SelectionStart = textBoxLogs.TextLength;
+            textBoxLogs.SelectionLength = 0;
+            textBoxLogs.SelectionColor = color;
+
             string timestamp = DateTime.Now.ToString("MMM dd hh:mm:ss tt"); // Format: Jul 29 01:42:48 PM
             string formattedLog = $"{timestamp} [{logType}] {message}{Environment.NewLine}";
             textBoxLogs.AppendText(formattedLog);
+            textBoxLogs.SelectionColor = textBoxLogs.ForeColor;
+            textBoxLogs.ScrollToCaret();
         }
 
         private async Task ConnectToSignalR(string sheetId)
@@ -145,6 +173,7 @@ namespace WebhookClient
             {
                 Invoke(() =>
                 {
+                    UpdateConnectionStatus(false);
                     AppendLog("WARNING", "⚠️ Đang cố gắng kết nối lại...");
                 });
             };
@@ -154,6 +183,7 @@ namespace WebhookClient
                 Invoke(() =>
                 {
                     AppendLog("SUCCESS", "✅ Đã kết nối lại thành công.");
+                    UpdateConnectionStatus(true);
                 });
 
                 try
@@ -171,6 +201,7 @@ namespace WebhookClient
             {
                 Invoke(() =>
                 {
+                    UpdateConnectionStatus(true);
                     AppendLog("ERROR", "❌ Kết nối đã bị đóng. Đang cố gắng kết nối lại...");
                 });
 
@@ -179,14 +210,17 @@ namespace WebhookClient
 
             try
             {
+
                 await _hubConnection.StartAsync();
-                AppendLog("SUCCESS", "✅ Đã kết nối tới server.");
+                //AppendLog("SUCCESS", "✅ Đã kết nối tới server.");
 
                 await _hubConnection.InvokeAsync("JoinFileGroup", sheetId);
+                UpdateConnectionStatus(true);
             }
             catch (Exception ex)
             {
                 AppendLog("ERROR", $"❌ Không kết nối được: {ex.Message}");
+                UpdateConnectionStatus(false);
             }
         }
 
@@ -329,6 +363,19 @@ namespace WebhookClient
             catch (Exception ex)
             {
                 AppendLog("ERROR", $"❌ Error opening browser: {ex.Message}");
+            }
+        }
+        private void UpdateConnectionStatus(bool isConnected)
+        {
+            if (isConnected)
+            {
+                statusLabel.Text = "Kết nối: Đã kết nối";
+                statusLabel.ForeColor = Color.Green;
+            }
+            else
+            {
+                statusLabel.Text = "Kết nối: Chưa kết nối";
+                statusLabel.ForeColor = Color.Red;
             }
         }
     }
