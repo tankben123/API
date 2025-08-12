@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System.Diagnostics;
 using System.Text.Json;
+using System.Threading.Tasks.Sources;
 
 namespace WebhookClient
 {
@@ -15,6 +16,14 @@ namespace WebhookClient
         {
             _ = InitializeComponent();
             SetupNotifyIcon();
+
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var resourceNames = assembly.GetManifestResourceNames();
+            using var stream = assembly.GetManifestResourceStream("WebhookClient.Icon.favicon.ico");
+            if (stream != null)
+            {
+                this.Icon = new Icon(stream);
+            }
             KeyPreview = true;
             _keepAliveTimer = new System.Windows.Forms.Timer();
             _keepAliveTimer.Interval = 300000; // 5 phút = 300,000 ms
@@ -39,7 +48,15 @@ namespace WebhookClient
         private void SetupNotifyIcon()
         {
             _notifyIcon = new NotifyIcon();
-            _notifyIcon.Icon = SystemIcons.Information;
+
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("WebhookClient.Icon.favicon.ico");
+            if (stream != null)
+            {
+                _notifyIcon.Icon = new Icon(stream);
+            }
+            
+
             _notifyIcon.Visible = true;
             _notifyIcon.Text = "Google Sheet Notifier";
 
