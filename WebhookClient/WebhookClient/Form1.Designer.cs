@@ -73,6 +73,7 @@ namespace WebhookClient
             textBoxSheetId.Name = "textBoxSheetId";
             textBoxSheetId.Size = new Size(431, 23);
             textBoxSheetId.TabIndex = 1;
+            textBoxSheetId.Text = Properties.Settings.Default.SheetId;
             // 
             // buttonJoin
             // 

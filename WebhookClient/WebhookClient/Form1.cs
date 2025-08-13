@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System.Diagnostics;
 using System.Text.Json;
-using System.Threading.Tasks.Sources;
 
 namespace WebhookClient
 {
@@ -154,10 +153,11 @@ namespace WebhookClient
                         string sheetName = root.GetProperty("sheetName").GetString() ?? "";
                         string range = root.GetProperty("range").GetString() ?? "";
                         string newValue = root.GetProperty("newValue").GetString() ?? "";
+                        string user = root.GetProperty("user").GetString() ?? "";
 
-                        AppendLog("INFO", $"📥 Thay đổi tại Sheet: {sheetName}, Ô: {range}, Giá trị mới: {newValue}");
+                        AppendLog("INFO", $"📥 Thay đổi tại Sheet: {sheetName} - {user.Split('@')[0]}, Ô: {range}, Giá trị mới: {newValue}");
 
-                        string message = $"Thay đổi tại Sheet: {sheetName} | Ô: {range}";
+                        string message = $"Thay đổi tại Sheet: {sheetName} - {user.Split('@')[0]} | Ô: {range}";
                         _latestUrl = root.GetProperty("url").GetString() ?? "";
 
                         ShowNotification("📌 Google Sheet thay đổi", message);
