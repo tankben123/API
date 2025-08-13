@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System.Diagnostics;
 using System.Text.Json;
+using System.Runtime.InteropServices;
 
 namespace WebhookClient
 {
@@ -11,9 +12,49 @@ namespace WebhookClient
         private string _latestUrl = "";
         private System.Windows.Forms.Timer _keepAliveTimer;
 
+
+        [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
+        private static extern IntPtr CreateRoundRectRgn(
+            int nLeftRect, int nTopRect, int nRightRect, int nBottomRect,
+            int nWidthEllipse, int nHeightEllipse
+        );
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            if (this.ClientRectangle.Width > 0 && this.ClientRectangle.Height > 0)
+            {
+                using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(this.ClientRectangle,
+                    Color.White, Color.FromArgb(230, 240, 250), 90F))
+                {
+                    e.Graphics.FillRectangle(brush, this.ClientRectangle);
+                }
+            }
+            else
+            {
+                base.OnPaintBackground(e); // Fallback to default behavior if dimensions are invalid
+            }
+        }
+
         public Form1()
         {
             _ = InitializeComponent();
+
+            buttonJoin.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, buttonJoin.Width, buttonJoin.Height, 8, 8));
+            buttonExit.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, buttonExit.Width, buttonExit.Height, 8, 8));
+            //textBoxSheetId.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, textBoxSheetId.Width, textBoxSheetId.Height, 6, 6));
+            //textBoxLogs.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, textBoxLogs.Width, textBoxLogs.Height, 6, 6));
+
+
+            buttonJoin.BackColor = Color.FromArgb(46, 204, 113); // xanh lá tươi
+            buttonJoin.ForeColor = Color.White;
+            buttonJoin.FlatStyle = FlatStyle.Flat;
+            buttonJoin.FlatAppearance.BorderSize = 0;
+
+            buttonExit.BackColor = Color.FromArgb(231, 76, 60); // đỏ
+            buttonExit.ForeColor = Color.White;
+            buttonExit.FlatStyle = FlatStyle.Flat;
+            buttonExit.FlatAppearance.BorderSize = 0;
+
 
             textBoxSheetId.TextChanged += (s, e) =>
             {
